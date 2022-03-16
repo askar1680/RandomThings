@@ -1,30 +1,18 @@
 import UIKit
 
-final class OperationViewController: UIViewController {
+final class TestOperations {
     
-    let condition = NSCondition()
+    let operationQueue = EAOperationQueue()
     
     var counter = 0
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        DispatchQueue.global().async {
-            for i in 0...10 {
-                sleep(1)
-                print(i)
-                self.counter += 1
-                self.condition.signal()
-            }
+    func test() {
+        print("start")
+        operationQueue.maxConcurrentOperationCount = 2
+        DispatchQueue.concurrentPerform(iterations: 30) { i in
+            print(i)
+            sleep(1)
         }
-        
-        condition.lock()
-        while counter < 10 {
-            print("called condition")
-            condition.wait()
-        }
-        condition.unlock()
-        
         print("the end")
     }
 }
@@ -45,7 +33,7 @@ final class EAOperationQueue: NSObject {
     private var allOperations = SafeArray<Operation>()
     private var dependenciesMap = SafeDictionary<String, [Operation]>()
     
-    private var semaphore = DispatchSemaphore(value: 3)
+    private var semaphore = DispatchSemaphore(value: 2)
     private let queue = DispatchQueue(label: "EAOperationQueue", qos: .default, attributes: .concurrent)
     
     override func observeValue(
@@ -138,12 +126,7 @@ final class EAOperationQueue: NSObject {
 }
 
 
-
-
-
-
-
-
+// Not finished
 class EAOperation: NSObject {
     
     var isReady: Bool {
@@ -181,6 +164,7 @@ class EAOperation: NSObject {
     }
 }
 
+// Not finished
 class EABlockOperation: EAOperation {
     
     var block: () -> Void
