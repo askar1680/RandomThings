@@ -9,7 +9,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        EADispatchSemaphore.test()
         for i in 0...count {
             texts.append("text #\(i)")
         }
